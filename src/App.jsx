@@ -5,8 +5,9 @@ import Confetti from "react-confetti";
 function App() {
     const { width, height } = useWindowSize();
 
-    const [answeredYes, setAnsweredYes] = useState(false);
     const [noCount, setNoCount] = useState(0);
+    const [answeredYes, setAnsweredYes] = useState(false);
+    const [confettiComplete, setConfettiComplete] = useState(false);
 
     function handleYes(e) {
         e.preventDefault();
@@ -18,17 +19,18 @@ function App() {
         setNoCount((x) => x + 1);
     }
 
-    useEffect(
-        function () {
-            var yesBtn = document.getElementById("yes-btn");
-
-            yesBtn.style.height = `${3 + noCount}rem`;
-            yesBtn.style.width = `${5.5 + 1.5 * noCount}rem`;
-
-            yesBtn.style.fontSize = `${1 + 0.5 * noCount}rem`;
-        },
-        [noCount]
+    useEffect(() =>
+        document.addEventListener("keydown", (e) => {
+            if (answeredYes && confettiComplete && e.key === "Escape")
+                location.reload();
+        })
     );
+
+    const yesBtnStyles = {
+        height: `${3 + noCount}rem`,
+        width: `${5.5 + 1.5 * noCount}rem`,
+        fontSize: `${1 + 0.5 * noCount}rem`
+    };
 
     return (
         <>
@@ -38,6 +40,7 @@ function App() {
                 recycle={false}
                 width={width}
                 height={height - 1}
+                onConfettiComplete={() => setConfettiComplete(true)}
             />
             <form>
                 {answeredYes ? (
@@ -56,7 +59,8 @@ function App() {
                         <label>Of course you do 😼</label>
                         {noCount > 0 && (
                             <p className="mistakes">
-                                (You were wrong {noCount} times)
+                                (You were wrong {noCount}{" "}
+                                {noCount === 1 ? "time" : "times"})
                             </p>
                         )}
                     </>
@@ -76,9 +80,13 @@ function App() {
                 )}
                 <div
                     className="buttons"
-                    style={{ display: `${answeredYes && "none"}` }}
+                    style={{ display: `${answeredYes ? "none" : "flex"}` }}
                 >
-                    <button id="yes-btn" onClick={handleYes}>
+                    <button
+                        id="yes-btn"
+                        onClick={handleYes}
+                        style={yesBtnStyles}
+                    >
                         Yes
                     </button>
                     <button id="no-btn" onClick={handleNo}>
