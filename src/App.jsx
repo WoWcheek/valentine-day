@@ -23,7 +23,7 @@ function App() {
             var yesBtn = document.getElementById("yes-btn");
 
             yesBtn.style.height = `${3 + noCount}rem`;
-            yesBtn.style.width = `${5.5 + noCount}rem`;
+            yesBtn.style.width = `${5.5 + 1.5 * noCount}rem`;
 
             yesBtn.style.fontSize = `${1 + 0.5 * noCount}rem`;
         },
@@ -54,10 +54,25 @@ function App() {
                 {answeredYes ? (
                     <>
                         <label>Of course you do 😼</label>
-                        {noCount > 0 && <p>(You were wrong {noCount} times)</p>}
+                        {noCount > 0 && (
+                            <p className="mistakes">
+                                (You were wrong {noCount} times)
+                            </p>
+                        )}
                     </>
                 ) : (
-                    <label>Will you be my Valentine ?</label>
+                    <>
+                        <label>Will you be my Valentine ?</label>
+                        {noCount >= 5 && noCount < 10 && (
+                            <p className="details">You better say yes 😠</p>
+                        )}
+                        {noCount >= 10 && noCount < 15 && (
+                            <p className="details">Really? 😲</p>
+                        )}
+                        {noCount >= 15 && (
+                            <p className="details">Pleeease say yes 😭</p>
+                        )}
+                    </>
                 )}
                 <div
                     className="buttons"
